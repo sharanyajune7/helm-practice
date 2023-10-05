@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    app: {{ .Release.Name }}-backend
+spec:
+  replicas: {{ .Values.backend.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-backend
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-backend
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag}}"
+          ports:
+            - name: http
+              containerPort: {{ .Values.backend.service.ports.port }}
+              protocol: TCP
+          env:
+            - name: QUARKUS_MONGODB_CONNECTION_STRING
+              value: {{ .Values.observaiBackend.mongodbConnectionString }}
+            - name: MP_MESSAGING_INCOMING_METRIC_IN_BOOTSTRAP_SERVERS
+              value: {{ .Values.observaiBackend.incomingMetricBootstrapServers }}
+            - name: MP_MESSAGING_INCOMING_LOGS_IN_BOOTSTRAP_SERVERS
+              value: {{ .Values.observaiBackend.incomingLogsBootstrapServers }}
+            - name: MP_MESSAGING_INCOMING_TRACE_IN_BOOTSTRAP_SERVERS
+              value: {{ .Values.observaiBackend.incomingTraceBootstrapServers }}
+# {{ printf "MongoDB Connection String: %s" .Values.observaiBackend.mongodbConnectionString | quote }}

@@ -1,0 +1,11 @@
+frontend:
+  replicaCount: 1
+  image:
+    repository: sharon0706/observai_zaga_ui
+    tag: latest
+  service:
+    type: ClusterIP
+    ports:
+      port: 8080
+      targetPort: 8080
+
